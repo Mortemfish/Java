@@ -1,0 +1,240 @@
+Практическая работа №6
+
+import java.util.*;
+
+// Класс Task (Задача)
+class Task {
+    private static int counter = 1;
+    private int id;
+    private String description;
+    private String category;
+    private boolean isDone;
+    private Date creationDate;
+
+    // Конструктор
+    public Task(String description, String category) {
+        this.id = counter++;
+        this.description = description;
+        this.category = category;
+        this.isDone = false;
+        this.creationDate = new Date();  // Устанавливаем текущую дату
+    }
+
+    // Методы для работы с полями
+    public int getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void markAsDone() {
+        this.isDone = true;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    // Метод для вывода информации о задаче
+    public void displayInfo() {
+        System.out.println("ID: " + id);
+        System.out.println("Описание: " + description);
+        System.out.println("Категория: " + category);
+        System.out.println("Статус: " + (isDone ? "Выполнена" : "Не выполнена"));
+        System.out.println("Дата создания: " + creationDate);
+        System.out.println("---------------------------");
+    }
+}
+
+// Класс для управления списком задач
+class ToDoList {
+    private List<Task> tasks;                // Список всех задач
+    private Set<String> categories;          // Уникальные категории задач
+    private Map<String, List<Task>> tasksByCategory;  // Задачи по категориям
+
+    // Конструктор
+    public ToDoList() {
+        tasks = new ArrayList<>();
+        categories = new HashSet<>();
+        tasksByCategory = new HashMap<>();
+    }
+
+    // Метод для добавления новой задачи
+    public void addTask(String description, String category) {
+        Task task = new Task(description, category);
+        tasks.add(task);
+        categories.add(category);
+
+        // Добавление задачи в соответствующую категорию в Map
+        tasksByCategory.putIfAbsent(category, new ArrayList<>());
+        tasksByCategory.get(category).add(task);
+        System.out.println("Задача добавлена!");
+    }
+
+    // Метод для отметки задачи как выполненной
+    public void markTaskAsDone(int id) {
+        for (Task task : tasks) {
+            if (task.getId() == id) {
+                task.markAsDone();
+                System.out.println("Задача с ID " + id + " отмечена как выполненная.");
+                return;
+            }
+        }
+        System.out.println("Задача с таким ID не найдена.");
+    }
+
+    // Метод для удаления задачи
+    public void removeTask(int id) {
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if (task.getId() == id) {
+                iterator.remove();
+                tasksByCategory.get(task.getCategory()).remove(task);
+                System.out.println("Задача с ID " + id + " удалена.");
+                return;
+            }
+        }
+        System.out.println("Задача с таким ID не найдена.");
+    }
+
+    // Метод для вывода всех задач
+    public void displayAllTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("Список задач пуст.");
+        } else {
+            for (Task task : tasks) {
+                task.displayInfo();
+            }
+        }
+    }
+
+    // Метод для вывода задач по категориям
+    public void displayTasksByCategory() {
+        for (String category : tasksByCategory.keySet()) {
+            System.out.println("Категория: " + category);
+            for (Task task : tasksByCategory.get(category)) {
+                task.displayInfo();
+            }
+        }
+    }
+
+    // Метод для поиска задач по ключевым словам
+    public void searchTasks(String keyword) {
+        boolean found = false;
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                task.displayInfo();
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("Задачи с ключевым словом '" + keyword + "' не найдены.");
+        }
+    }
+
+    // Метод для вывода уникальных категорий
+    public void displayCategories() {
+        if (categories.isEmpty()) {
+            System.out.println("Категорий нет.");
+        } else {
+            System.out.println("Уникальные категории:");
+            for (String category : categories) {
+                System.out.println(category);
+            }
+        }
+    }
+
+    // Метод для вывода статистики по задачам
+    public void displayTaskStatistics() {
+        int completed = 0;
+        int notCompleted = 0;
+        for (Task task : tasks) {
+            if (task.isDone()) {
+                completed++;
+            } else {
+                notCompleted++;
+            }
+        }
+        System.out.println("Статистика:");
+        System.out.println("Выполненные задачи: " + completed);
+        System.out.println("Невыполненные задачи: " + notCompleted);
+    }
+}
+
+// Главный класс для тестирования программы
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ToDoList toDoList = new ToDoList();
+
+        // Простое текстовое меню для управления задачами
+        while (true) {
+            System.out.println("Меню:");
+            System.out.println("1. Добавить задачу");
+            System.out.println("2. Отметить задачу как выполненную");
+            System.out.println("3. Удалить задачу");
+            System.out.println("4. Показать все задачи");
+            System.out.println("5. Показать задачи по категориям");
+            System.out.println("6. Поиск задач по ключевым словам");
+            System.out.println("7. Показать уникальные категории");
+            System.out.println("8. Показать статистику по задачам");
+            System.out.println("9. Выйти");
+            System.out.print("Выберите действие: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Считывание символа новой строки
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Введите описание задачи: ");
+                    String description = scanner.nextLine();
+                    System.out.print("Введите категорию задачи: ");
+                    String category = scanner.nextLine();
+                    toDoList.addTask(description, category);
+                    break;
+                case 2:
+                    System.out.print("Введите ID задачи для отметки как выполненной: ");
+                    int idDone = scanner.nextInt();
+                    toDoList.markTaskAsDone(idDone);
+                    break;
+                case 3:
+                    System.out.print("Введите ID задачи для удаления: ");
+                    int idRemove = scanner.nextInt();
+                    toDoList.removeTask(idRemove);
+                    break;
+                case 4:
+                    toDoList.displayAllTasks();
+                    break;
+                case 5:
+                    toDoList.displayTasksByCategory();
+                    break;
+                case 6:
+                    System.out.print("Введите ключевое слово для поиска: ");
+                    String keyword = scanner.nextLine();
+                    toDoList.searchTasks(keyword);
+                    break;
+                case 7:
+                    toDoList.displayCategories();
+                    break;
+                case 8:
+                    toDoList.displayTaskStatistics();
+                    break;
+                case 9:
+                    System.out.println("Выход из программы.");
+                    return;
+                default:
+                    System.out.println("Неверный выбор. Попробуйте снова.");
+            }
+        }
+    }
+}
