@@ -1,0 +1,142 @@
+Практическая работа 5 JAVA 
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Перечисление типов питомцев
+enum PetType {
+    DOG, CAT
+}
+
+// Перечисление состояния здоровья питомцев
+enum HealthStatus {
+    HEALTHY, SICK
+}
+
+// Класс Pet (Питомец)
+class Pet {
+    private String name;
+    private int age;
+    private PetType type;
+    private HealthStatus healthStatus;
+
+    // Конструктор для инициализации полей
+    public Pet(String name, int age, PetType type, HealthStatus healthStatus) {
+        this.name = name;
+        this.age = age;
+        this.type = type;
+        this.healthStatus = healthStatus;
+    }
+
+    // Метод для получения имени питомца
+    public String getName() {
+        return name;
+    }
+
+    // Метод для вывода информации о питомце
+    public void displayInfo() {
+        System.out.println("Имя: " + name);
+        System.out.println("Возраст: " + age);
+        System.out.println("Тип: " + type);
+        System.out.println("Состояние здоровья: " + healthStatus);
+    }
+}
+
+// Класс Dog (Собака) - наследник Pet
+class Dog extends Pet {
+    private String breed;
+
+    // Конструктор для инициализации полей, включая породу
+    public Dog(String name, int age, String breed, HealthStatus healthStatus) {
+        super(name, age, PetType.DOG, healthStatus);
+        this.breed = breed;
+    }
+
+    // Переопределенный метод для вывода информации о собаке
+    @Override
+    public void displayInfo() {
+        super.displayInfo();
+        System.out.println("Порода: " + breed);
+    }
+}
+
+// Класс Cat (Кошка) - наследник Pet
+class Cat extends Pet {
+    private String color;
+
+    // Конструктор для инициализации полей, включая цвет
+    public Cat(String name, int age, String color, HealthStatus healthStatus) {
+        super(name, age, PetType.CAT, healthStatus);
+        this.color = color;
+    }
+
+    // Переопределенный метод для вывода информации о кошке
+    @Override
+    public void displayInfo() {
+        super.displayInfo();
+        System.out.println("Цвет: " + color);
+    }
+}
+
+// Исключение для случая, когда питомец с таким именем уже существует
+class PetAlreadyExistsException extends Exception {
+    public PetAlreadyExistsException(String message) {
+        super(message);
+    }
+}
+
+// Класс PetClinic (Ветеринарная клиника)
+class PetClinic {
+    private List<Pet> pets;
+
+    // Конструктор для инициализации списка питомцев
+    public PetClinic() {
+        pets = new ArrayList<>();
+    }
+
+    // Метод для добавления питомца в клинику
+    public void addPet(Pet pet) throws PetAlreadyExistsException {
+        for (Pet existingPet : pets) {
+            if (existingPet.getName().equalsIgnoreCase(pet.getName())) {
+                throw new PetAlreadyExistsException("Питомец с именем " + pet.getName() + " уже существует.");
+            }
+        }
+        pets.add(pet);
+        System.out.println("Питомец " + pet.getName() + " добавлен в клинику.");
+    }
+
+    // Метод для вывода информации о всех питомцах
+    public void displayPets() {
+        System.out.println("Список питомцев в клинике:");
+        for (Pet pet : pets) {
+            pet.displayInfo();
+            System.out.println();
+        }
+    }
+}
+
+// Главный класс для тестирования программы
+public class Main {
+    public static void main(String[] args) {
+        // Создаем клинику
+        PetClinic clinic = new PetClinic();
+
+        // Создаем питомцев
+        Pet dog = new Dog("Бобик", 5, "Лабрадор", HealthStatus.HEALTHY);
+        Pet cat = new Cat("Мурка", 3, "Черный", HealthStatus.SICK);
+
+        // Добавляем питомцев в клинику и обрабатываем исключения
+        try {
+            clinic.addPet(dog);
+            clinic.addPet(cat);
+
+            // Попытка добавить питомца с уже существующим именем
+            clinic.addPet(new Dog("Бобик", 2, "Бульдог", HealthStatus.HEALTHY));
+        } catch (PetAlreadyExistsException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Отображаем список питомцев в клинике
+        clinic.displayPets();
+    }
+}
