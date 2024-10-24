@@ -1,0 +1,300 @@
+Практическая работа java 4
+
+Задание 1
+
+public class Book {
+    private String title;
+    private String author;
+    private double price;
+
+    // Конструктор для инициализации полей
+    public Book(String title, String author, double price) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+    }
+
+    // Геттеры для получения значений полей
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    // Метод для вывода информации о книге
+    public void printInfo() {
+        System.out.println("Название: " + title + ", Автор: " + author + ", Цена: " + price + " руб.");
+    }
+
+    public static void main(String[] args) {
+        // Создаем несколько объектов класса Book
+        Book book1 = new Book("1984", "Джордж Оруэлл", 500);
+        Book book2 = new Book("Мастер и Маргарита", "Михаил Булгаков", 450);
+        Book book3 = new Book("Преступление и наказание", "Федор Достоевский", 550);
+
+        // Выводим информацию о каждой книге
+        book1.printInfo();
+        book2.printInfo();
+        book3.printInfo();
+    }
+}
+
+
+Задание 2
+
+public class Student {
+    private String name;
+    private int age;
+    private String major;
+
+    // Конструктор для инициализации полей
+    public Student(String name, int age, String major) {
+        this.name = name;
+        this.age = age;
+        this.major = major;
+    }
+
+    // Геттеры для всех полей
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    // Сеттеры для всех полей
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    // Метод для вывода информации о студенте
+    public void printInfo() {
+        System.out.println("Имя: " + name + ", Возраст: " + age + ", Специальность: " + major);
+    }
+
+    // Метод для нахождения самого старшего студента
+    public static Student findOldestStudent(Student[] students) {
+        Student oldest = students[0];  // Предполагаем, что первый студент самый старший
+        for (Student student : students) {
+            if (student.getAge() > oldest.getAge()) {
+                oldest = student;
+            }
+        }
+        return oldest;
+    }
+
+    public static void main(String[] args) {
+        // Создаем массив объектов класса Student
+        Student[] students = new Student[3];
+        students[0] = new Student("Иван Иванов", 20, "Информатика");
+        students[1] = new Student("Мария Петрова", 22, "Математика");
+        students[2] = new Student("Алексей Сидоров", 21, "Физика");
+
+        // Выводим информацию о всех студентах
+        for (Student student : students) {
+            student.printInfo();
+        }
+
+        // Находим самого старшего студента
+        Student oldestStudent = Student.findOldestStudent(students);
+        System.out.println("\nСамый старший студент:");
+        oldestStudent.printInfo();
+    }
+}
+
+Задание 3
+
+public class Product {
+    private String name;
+    private int quantity;
+    private double price;
+
+    // Конструктор для инициализации полей
+    public Product(String name, int quantity, double price) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    // Геттеры для всех полей
+    public String getName() {
+        return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    // Метод для увеличения количества товара
+    public void increaseQuantity(int amount) {
+        if (amount > 0) {
+            this.quantity += amount;
+            System.out.println("Количество товара увеличено на " + amount + ". Текущее количество: " + this.quantity);
+        } else {
+            System.out.println("Некорректное значение для увеличения количества.");
+        }
+    }
+
+    // Метод для уменьшения количества товара
+    public void decreaseQuantity(int amount) {
+        if (amount > 0 && amount <= this.quantity) {
+            this.quantity -= amount;
+            System.out.println("Количество товара уменьшено на " + amount + ". Текущее количество: " + this.quantity);
+        } else {
+            System.out.println("Некорректное значение для уменьшения количества.");
+        }
+    }
+
+    // Метод для изменения цены
+    public void changePrice(double newPrice) {
+        if (newPrice > 0) {
+            this.price = newPrice;
+            System.out.println("Цена изменена на: " + this.price + " руб.");
+        } else {
+            System.out.println("Некорректное значение цены.");
+        }
+    }
+
+    // Метод для вывода информации о продукте
+    public void printInfo() {
+        System.out.println("Название: " + name + ", Количество: " + quantity + ", Цена: " + price + " руб.");
+    }
+
+    public static void main(String[] args) {
+        // Создаем объект класса Product
+        Product product = new Product("Молоко", 50, 75.0);
+
+        // Выводим начальную информацию о продукте
+        product.printInfo();
+
+        // Изменяем количество товара
+        product.increaseQuantity(10);  // Увеличение количества на 10
+        product.decreaseQuantity(5);   // Уменьшение количества на 5
+
+        // Изменяем цену товара
+        product.changePrice(80.0);
+
+        // Выводим обновленную информацию о продукте
+        product.printInfo();
+    }
+}
+
+Задание 4
+
+// Родительский класс ElectronicDevice
+public class ElectronicDevice {
+    protected String brand;
+    protected String model;
+    protected double price;
+
+    // Конструктор для инициализации полей
+    public ElectronicDevice(String brand, String model, double price) {
+        this.brand = brand;
+        this.model = model;
+        this.price = price;
+    }
+
+    // Метод для вывода информации об устройстве
+    public void printInfo() {
+        System.out.println("Бренд: " + brand + ", Модель: " + model + ", Цена: " + price + " руб.");
+    }
+}
+
+// Подкласс Smartphone, наследующий от ElectronicDevice
+class Smartphone extends ElectronicDevice {
+    private String operatingSystem;
+
+    // Конструктор для инициализации полей, включая поля родительского класса
+    public Smartphone(String brand, String model, double price, String operatingSystem) {
+        super(brand, model, price);  // Вызов конструктора родительского класса
+        this.operatingSystem = operatingSystem;
+    }
+
+    // Метод для вывода информации о смартфоне
+    @Override
+    public void printInfo() {
+        // Вызов метода родительского класса для вывода общей информации
+        super.printInfo();
+        System.out.println("Операционная система: " + operatingSystem);
+    }
+
+    public static void main(String[] args) {
+        // Создаем объект класса ElectronicDevice
+        ElectronicDevice device = new ElectronicDevice("Sony", "Bravia X90J", 120000);
+        device.printInfo();
+
+        System.out.println();
+
+        // Создаем объект класса Smartphone
+        Smartphone phone = new Smartphone("Apple", "iPhone 14", 99999, "iOS");
+        phone.printInfo();
+    }
+}
+
+Задание 5 
+
+// Родительский класс Animal
+public class Animal {
+    // Метод, который будет переопределяться в подклассах
+    public void makeSound() {
+        System.out.println("Животное издает звук");
+    }
+}
+
+// Подкласс Dog, наследующий от Animal
+class Dog extends Animal {
+    // Переопределение метода makeSound()
+    @Override
+    public void makeSound() {
+        System.out.println("Собака лает: Гав-гав!");
+    }
+}
+
+// Подкласс Cat, наследующий от Animal
+class Cat extends Animal {
+    // Переопределение метода makeSound()
+    @Override
+    public void makeSound() {
+        System.out.println("Кошка мяукает: Мяу-мяу!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Создаем массив объектов Animal
+        Animal[] animals = new Animal[3];
+
+        // Заполняем массив объектами подклассов Dog и Cat
+        animals[0] = new Dog();
+        animals[1] = new Cat();
+        animals[2] = new Dog();
+
+        // Вызываем метод makeSound() для каждого объекта
+        for (Animal animal : animals) {
+            animal.makeSound();
+        }
+    }
+}
