@@ -1,0 +1,373 @@
+Практическая работа №4 (part 2)
+
+Задание 1
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Класс Book (Книга)
+class Book {
+    private String title;
+    private String author;
+    private boolean isCheckedOut;
+
+    // Конструктор для инициализации полей
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isCheckedOut = false;  // По умолчанию книга доступна
+    }
+
+    // Метод checkout, изменяющий статус книги на "на руках"
+    public void checkout() {
+        if (!isCheckedOut) {
+            isCheckedOut = true;
+            System.out.println("Книга \"" + title + "\" была взята.");
+        } else {
+            System.out.println("Книга \"" + title + "\" уже на руках.");
+        }
+    }
+
+    // Метод checkin, изменяющий статус книги на "доступна"
+    public void checkin() {
+        if (isCheckedOut) {
+            isCheckedOut = false;
+            System.out.println("Книга \"" + title + "\" возвращена.");
+        } else {
+            System.out.println("Книга \"" + title + "\" уже доступна.");
+        }
+    }
+
+    // Метод для вывода информации о книге
+    public void displayInfo() {
+        System.out.println("Название: " + title);
+        System.out.println("Автор: " + author);
+        System.out.println("Доступна: " + (!isCheckedOut ? "Да" : "Нет"));
+    }
+
+    public boolean isAvailable() {
+        return !isCheckedOut;
+    }
+}
+
+// Класс Reader (Читатель)
+class Reader {
+    private String name;
+    private List<Book> checkedOutBooks;
+
+    // Конструктор для инициализации полей
+    public Reader(String name) {
+        this.name = name;
+        this.checkedOutBooks = new ArrayList<>();
+    }
+
+    // Метод checkoutBook, добавляющий книгу в список и вызывающий checkout у книги
+    public void checkoutBook(Book book) {
+        if (book.isAvailable()) {
+            checkedOutBooks.add(book);
+            book.checkout();
+        } else {
+            System.out.println("Книга \"" + book + "\" недоступна.");
+        }
+    }
+
+    // Метод checkinBook, удаляющий книгу из списка и вызывающий checkin у книги
+    public void checkinBook(Book book) {
+        if (checkedOutBooks.contains(book)) {
+            checkedOutBooks.remove(book);
+            book.checkin();
+        } else {
+            System.out.println("У читателя нет этой книги.");
+        }
+    }
+
+    // Метод для вывода информации о читателе и списке книг
+    public void displayInfo() {
+        System.out.println("Читатель: " + name);
+        System.out.println("Книги на руках:");
+        for (Book book : checkedOutBooks) {
+            book.displayInfo();
+        }
+    }
+}
+
+// Класс Library (Библиотека)
+class Library {
+    private List<Book> books;
+
+    // Конструктор для инициализации списка
+    public Library() {
+        books = new ArrayList<>();
+    }
+
+    // Метод addBook, добавляющий книгу в библиотеку
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    // Метод для вывода информации о всех доступных книгах
+    public void displayAvailableBooks() {
+        System.out.println("Доступные книги:");
+        for (Book book : books) {
+            if (book.isAvailable()) {
+                book.displayInfo();
+            }
+        }
+    }
+}
+
+// Главный класс для тестирования программы
+public class Main {
+    public static void main(String[] args) {
+        // Создаем библиотеку и книги
+        Library library = new Library();
+        Book book1 = new Book("1984", "Джордж Оруэлл");
+        Book book2 = new Book("Гарри Поттер", "Джоан Роулинг");
+        
+        // Добавляем книги в библиотеку
+        library.addBook(book1);
+        library.addBook(book2);
+
+        // Создаем читателя
+        Reader reader = new Reader("Жанибек");
+
+        // Отображаем доступные книги
+        library.displayAvailableBooks();
+        System.out.println();
+
+        // Читатель берет книгу
+        reader.checkoutBook(book1);
+        System.out.println();
+
+        // Отображаем информацию о читателе и книгах на руках
+        reader.displayInfo();
+        System.out.println();
+
+        // Отображаем доступные книги после того, как книга взята
+        library.displayAvailableBooks();
+        System.out.println();
+
+        // Читатель возвращает книгу
+        reader.checkinBook(book1);
+        System.out.println();
+
+        // Отображаем доступные книги после возврата
+        library.displayAvailableBooks();
+    }
+}
+
+
+Задание 2
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Класс Car (Автомобиль)
+class Car {
+    private String licensePlate;
+    private String model;
+    private boolean isRented;
+
+    // Конструктор для инициализации полей
+    public Car(String licensePlate, String model) {
+        this.licensePlate = licensePlate;
+        this.model = model;
+        this.isRented = false;  // По умолчанию автомобиль доступен
+    }
+
+    // Метод rent, устанавливающий статус аренды
+    public void rent() {
+        if (!isRented) {
+            isRented = true;
+            System.out.println("Автомобиль " + model + " с номером " + licensePlate + " арендован.");
+        } else {
+            System.out.println("Автомобиль " + model + " с номером " + licensePlate + " уже в аренде.");
+        }
+    }
+
+    // Метод returnCar, сбрасывающий статус аренды
+    public void returnCar() {
+        if (isRented) {
+            isRented = false;
+            System.out.println("Автомобиль " + model + " с номером " + licensePlate + " возвращен.");
+        } else {
+            System.out.println("Автомобиль " + model + " с номером " + licensePlate + " уже доступен.");
+        }
+    }
+
+    // Метод для вывода информации об автомобиле
+    public void displayInfo() {
+        System.out.println("Модель: " + model);
+        System.out.println("Номерной знак: " + licensePlate);
+        System.out.println("Арендован: " + (isRented ? "Да" : "Нет"));
+    }
+
+    public boolean isAvailable() {
+        return !isRented;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+}
+
+// Класс Driver (Водитель)
+class Driver {
+    private String name;
+    private Car rentedCar;
+
+    // Конструктор для инициализации полей
+    public Driver(String name) {
+        this.name = name;
+        this.rentedCar = null;  // Водитель изначально не арендует автомобиль
+    }
+
+    // Метод rentCar, устанавливающий арендованный автомобиль и вызывающий метод rent
+    public void rentCar(Car car) {
+        if (rentedCar == null && car.isAvailable()) {
+            rentedCar = car;
+            car.rent();
+        } else if (rentedCar != null) {
+            System.out.println(name + " уже арендовал автомобиль.");
+        } else {
+            System.out.println("Автомобиль недоступен для аренды.");
+        }
+    }
+
+    // Метод returnCar, освобождающий арендованный автомобиль и вызывающий returnCar у автомобиля
+    public void returnCar() {
+        if (rentedCar != null) {
+            rentedCar.returnCar();
+            rentedCar = null;
+        } else {
+            System.out.println(name + " не арендовал автомобиль.");
+        }
+    }
+
+    // Метод для вывода информации о водителе и арендованном автомобиле
+    public void displayInfo() {
+        System.out.println("Водитель: " + name);
+        if (rentedCar != null) {
+            System.out.println("Арендованный автомобиль:");
+            rentedCar.displayInfo();
+        } else {
+            System.out.println("Водитель не арендует автомобиль.");
+        }
+    }
+}
+
+// Класс CarPark (Автопарк)
+class CarPark {
+    private List<Car> cars;
+
+    // Конструктор для инициализации списка
+    public CarPark() {
+        cars = new ArrayList<>();
+    }
+
+    // Метод addCar, добавляющий автомобиль в автопарк
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    // Метод для вывода информации о всех доступных автомобилях
+    public void displayAvailableCars() {
+        System.out.println("Доступные автомобили:");
+        for (Car car : cars) {
+            if (car.isAvailable()) {
+                car.displayInfo();
+                System.out.println();
+            }
+        }
+    }
+
+    // Метод поиска автомобиля по номерному знаку
+    public Car findCarByLicensePlate(String licensePlate) {
+        for (Car car : cars) {
+            if (car.getLicensePlate().equalsIgnoreCase(licensePlate)) {
+                return car;
+            }
+        }
+        return null;
+    }
+
+    // Метод поиска автомобиля по модели
+    public List<Car> findCarsByModel(String model) {
+        List<Car> foundCars = new ArrayList<>();
+        for (Car car : cars) {
+            if (car.getModel().equalsIgnoreCase(model)) {
+                foundCars.add(car);
+            }
+        }
+        return foundCars;
+    }
+}
+
+// Главный класс для тестирования программы
+public class Main {
+    public static void main(String[] args) {
+        // Создаем автопарк и автомобили
+        CarPark carPark = new CarPark();
+        Car car1 = new Car("A123BC", "Toyota Camry");
+        Car car2 = new Car("B456DE", "BMW X5");
+        Car car3 = new Car("C789FG", "Mercedes E-Class");
+
+        // Добавляем автомобили в автопарк
+        carPark.addCar(car1);
+        carPark.addCar(car2);
+        carPark.addCar(car3);
+
+        // Создаем водителя
+        Driver driver = new Driver("Иван");
+
+        // Отображаем доступные автомобили
+        carPark.displayAvailableCars();
+        System.out.println();
+
+        // Водитель арендует автомобиль
+        driver.rentCar(car1);
+        System.out.println();
+
+        // Отображаем информацию о водителе
+        driver.displayInfo();
+        System.out.println();
+
+        // Отображаем доступные автомобили после аренды
+        carPark.displayAvailableCars();
+        System.out.println();
+
+        // Водитель возвращает автомобиль
+        driver.returnCar();
+        System.out.println();
+
+        // Отображаем доступные автомобили после возврата
+        carPark.displayAvailableCars();
+        System.out.println();
+
+        // Поиск автомобиля по номерному знаку
+        Car foundCar = carPark.findCarByLicensePlate("B456DE");
+        if (foundCar != null) {
+            System.out.println("Найден автомобиль по номерному знаку:");
+            foundCar.displayInfo();
+        } else {
+            System.out.println("Автомобиль с таким номерным знаком не найден.");
+        }
+        System.out.println();
+
+        // Поиск автомобилей по модели
+        List<Car> foundCarsByModel = carPark.findCarsByModel("BMW X5");
+        if (!foundCarsByModel.isEmpty()) {
+            System.out.println("Найдены автомобили по модели:");
+            for (Car car : foundCarsByModel) {
+                car.displayInfo();
+                System.out.println();
+            }
+        } else {
+            System.out.println("Автомобили с такой моделью не найдены.");
+        }
+    }
+}
