@@ -1,0 +1,264 @@
+Практическая работа № 7
+
+import java.util.*;
+
+// Класс MenuItem (Элемент меню)
+class MenuItem {
+    private String name;
+    private double price;
+    private String category;
+
+    // Конструктор
+    public MenuItem(String name, double price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    // Геттеры
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    // Метод toString()
+    @Override
+    public String toString() {
+        return name + " - " + price + " (Категория: " + category + ")";
+    }
+}
+
+// Класс Order (Заказ)
+class Order {
+    private static int counter = 1;
+    private int id;
+    private Date date;
+    private List<MenuItem> items;
+
+    // Конструктор
+    public Order() {
+        this.id = counter++;
+        this.date = new Date();
+        this.items = new ArrayList<>();
+    }
+
+    // Метод для добавления элемента в заказ
+    public void addItem(MenuItem item) {
+        items.add(item);
+    }
+
+    // Метод для удаления элемента из заказа
+    public void removeItem(MenuItem item) {
+        items.remove(item);
+    }
+
+    // Метод для получения информации о заказе
+    public void displayOrder() {
+        System.out.println("Заказ ID: " + id);
+        System.out.println("Дата: " + date);
+        System.out.println("Элементы заказа:");
+        for (MenuItem item : items) {
+            System.out.println(" - " + item);
+        }
+        System.out.println("Общая сумма: " + getTotalPrice());
+        System.out.println("------------------------------");
+    }
+
+    // Метод для получения общей суммы заказа
+    public double getTotalPrice() {
+        double total = 0;
+        for (MenuItem item : items) {
+            total += item.getPrice();
+        }
+        return total;
+    }
+}
+
+// Класс Customer (Клиент)
+class Customer {
+    private String name;
+    private String phone;
+    private List<Order> orderHistory;
+
+    // Конструктор
+    public Customer(String name, String phone) {
+        this.name = name;
+        this.phone = phone;
+        this.orderHistory = new ArrayList<>();
+    }
+
+    // Метод для добавления заказа в историю
+    public void addOrder(Order order) {
+        orderHistory.add(order);
+    }
+
+    // Метод для получения информации о клиенте
+    public void displayInfo() {
+        System.out.println("Клиент: " + name + " (Телефон: " + phone + ")");
+        System.out.println("История заказов:");
+        for (Order order : orderHistory) {
+            order.displayOrder();
+        }
+        System.out.println("------------------------------");
+    }
+}
+
+// Интерфейс ICafe
+interface ICafe {
+    void addMenuItem(MenuItem item);
+    void removeMenuItem(String name);
+    List<MenuItem> getMenuItems();
+    Order createOrder(Customer customer, List<MenuItem> items);
+}
+
+// Класс Cafe (Кафе)
+class Cafe implements ICafe {
+    private List<MenuItem> menuItems;
+    private Map<Integer, Customer> customers;
+    private int customerIdCounter;
+
+    // Конструктор
+    public Cafe() {
+        menuItems = new ArrayList<>();
+        customers = new HashMap<>();
+        customerIdCounter = 1;
+    }
+
+    // Реализация метода добавления элемента меню
+    @Override
+    public void addMenuItem(MenuItem item) {
+        menuItems.add(item);
+        System.out.println("Элемент меню добавлен: " + item);
+    }
+
+    // Реализация метода удаления элемента меню
+    @Override
+    public void removeMenuItem(String name) {
+        menuItems.removeIf(item -> item.getName().equalsIgnoreCase(name));
+        System.out.println("Элемент меню удален: " + name);
+    }
+
+    // Реализация метода получения элементов меню
+    @Override
+    public List<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    // Реализация метода создания заказа
+    @Override
+    public Order createOrder(Customer customer, List<MenuItem> items) {
+        Order order = new Order();
+        for (MenuItem item : items) {
+            order.addItem(item);
+        }
+        customer.addOrder(order);
+        return order;
+    }
+
+    // Метод для добавления клиента
+    public void addCustomer(Customer customer) {
+        customers.put(customerIdCounter++, customer);
+    }
+
+    // Метод для получения клиента по ID
+    public Customer getCustomer(int id) {
+        return customers.get(id);
+    }
+}
+
+// Основной класс CafeApp
+public class CafeApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Cafe cafe = new Cafe();
+
+        // Добавление элементов меню
+        cafe.addMenuItem(new MenuItem("Капучино", 150, "Напитки"));
+        cafe.addMenuItem(new MenuItem("Чизкейк", 250, "Десерты"));
+        cafe.addMenuItem(new MenuItem("Салат Цезарь", 300, "Блюда"));
+
+        // Текстовое меню для взаимодействия с пользователем
+        while (true) {
+            System.out.println("Меню:");
+            System.out.println("1. Добавить клиента");
+            System.out.println("2. Посмотреть меню");
+            System.out.println("3. Создать заказ");
+            System.out.println("4. Посмотреть историю заказов клиента");
+            System.out.println("5. Выход");
+            System.out.print("Выберите действие: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Считывание символа новой строки
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Введите имя клиента: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Введите телефон клиента: ");
+                    String phone = scanner.nextLine();
+                    Customer customer = new Customer(name, phone);
+                    cafe.addCustomer(customer);
+                    System.out.println("Клиент добавлен!");
+                    break;
+                case 2:
+                    System.out.println("Меню:");
+                    for (MenuItem item : cafe.getMenuItems()) {
+                        System.out.println(item);
+                    }
+                    break;
+                case 3:
+                    System.out.print("Введите ID клиента для заказа: ");
+                    int customerId = scanner.nextInt();
+                    Customer orderCustomer = cafe.getCustomer(customerId);
+                    if (orderCustomer == null) {
+                        System.out.println("Клиент не найден!");
+                        break;
+                    }
+                    List<MenuItem> orderItems = new ArrayList<>();
+                    System.out.print("Введите количество элементов в заказе: ");
+                    int itemCount = scanner.nextInt();
+                    scanner.nextLine(); // Считывание символа новой строки
+
+                    for (int i = 0; i < itemCount; i++) {
+                        System.out.print("Введите название элемента меню: ");
+                        String itemName = scanner.nextLine();
+                        MenuItem item = cafe.getMenuItems().stream()
+                                .filter(menuItem -> menuItem.getName().equalsIgnoreCase(itemName))
+                                .findFirst()
+                                .orElse(null);
+                        if (item != null) {
+                            orderItems.add(item);
+                        } else {
+                            System.out.println("Элемент меню не найден: " + itemName);
+                        }
+                    }
+
+                    // Создание заказа
+                    cafe.createOrder(orderCustomer, orderItems);
+                    System.out.println("Заказ создан!");
+                    break;
+                case 4:
+                    System.out.print("Введите ID клиента для просмотра истории заказов: ");
+                    int historyCustomerId = scanner.nextInt();
+                    Customer historyCustomer = cafe.getCustomer(historyCustomerId);
+                    if (historyCustomer != null) {
+                        historyCustomer.displayInfo();
+                    } else {
+                        System.out.println("Клиент не найден!");
+                    }
+                    break;
+                case 5:
+                    System.out.println("Выход из программы.");
+                    return;
+                default:
+                    System.out.println("Неверный выбор. Попробуйте снова.");
+            }
+        }
+    }
+}
